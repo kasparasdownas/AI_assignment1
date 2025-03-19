@@ -65,7 +65,7 @@ class Game2048:
 
     def get_bg_color(self, value):
         bg_colors = {
-            0: "\033[48;5;255m",   
+            0: "\033[48;5;255m",  
             2: "\033[48;5;230m",
             4: "\033[48;5;229m",
             8: "\033[48;5;220m",
@@ -82,9 +82,9 @@ class Game2048:
 
     def get_fg_color(self, value):
         if value in (0, 2, 4, 8, 16):
-            return "\033[30m"  #
+            return "\033[30m"  
         else:
-            return "\033[97m"  
+            return "\033[97m" 
 
     def colored_tile(self, value):
         text = str(value) if value != 0 else ""
