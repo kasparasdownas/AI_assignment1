@@ -12,7 +12,7 @@ def main():
         board_copy = [row[:] for row in game.board]
         score = game.score
 
-        move = get_best_move(board_copy, score, depth=4)  
+        move = get_best_move(board_copy, score, depth=5)  
         if move is None:
             break
 

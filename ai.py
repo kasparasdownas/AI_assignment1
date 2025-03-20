@@ -1,5 +1,7 @@
 import math
 
+cache = {}
+
 def clone_board(board):
     return [row[:] for row in board]
 
@@ -73,11 +75,47 @@ def is_game_over_sim(board):
 def heuristic(board):
     free_cells = sum(cell == 0 for row in board for cell in row)
     max_tile = max(max(row) for row in board)
-    return free_cells * 100 + max_tile
+    
+    weights = [
+        [65536, 32768, 16384, 8192],
+        [512,   1024,  2048, 4096],
+        [256,   128,    64,   32],
+        [2,     4,      8,    16]
+    ]
+    weighted_score = sum(board[i][j] * weights[i][j] for i in range(4) for j in range(4))
+    
+
+    def monotonicity(line):
+        inc = sum(max(line[i] - line[i+1], 0) for i in range(len(line)-1))
+        dec = sum(max(line[i+1] - line[i], 0) for i in range(len(line)-1))
+        return -min(inc, dec)
+    
+    mono_row = sum(monotonicity(row) for row in board)
+    mono_col = sum(monotonicity(col) for col in zip(*board))
+    
+
+    corner_bonus = 0
+    if board[0][0] == max_tile or board[0][3] == max_tile or \
+       board[3][0] == max_tile or board[3][3] == max_tile:
+        corner_bonus = max_tile * 0.1  
+    
+
+    score_val = free_cells * 1000 + weighted_score + mono_row + mono_col + corner_bonus
+    return score_val
+
+def board_to_tuple(board):
+    return tuple(tuple(row) for row in board)
 
 def expectimax(board, score, depth, is_player):
+    key = (board_to_tuple(board), depth, is_player)
+    if key in cache:
+        return cache[key]
+    
     if depth == 0 or is_game_over_sim(board):
-        return heuristic(board)
+        value = heuristic(board)
+        cache[key] = value
+        return value
+    
     if is_player:
         best = -math.inf
         for move_func in [move_up_sim, move_down_sim, move_left_sim, move_right_sim]:
@@ -86,20 +124,26 @@ def expectimax(board, score, depth, is_player):
                 continue
             value = expectimax(new_board, new_score, depth - 1, False)
             best = max(best, value)
-        return best if best != -math.inf else heuristic(board)
+        result = best if best != -math.inf else heuristic(board)
+        cache[key] = result
+        return result
     else:
         total_value = 0
         empty_cells = [(i, j) for i in range(len(board))
                        for j in range(len(board[0])) if board[i][j] == 0]
         if not empty_cells:
-            return heuristic(board)
+            result = heuristic(board)
+            cache[key] = result
+            return result
         for i, j in empty_cells:
             for tile, prob in [(2, 0.9), (4, 0.1)]:
                 new_board = clone_board(board)
                 new_board[i][j] = tile
                 value = expectimax(new_board, score, depth - 1, True)
                 total_value += prob * value
-        return total_value / len(empty_cells)
+        result = total_value / len(empty_cells)
+        cache[key] = result
+        return result
 
 def get_best_move(board, score, depth=3):
     best_value = -math.inf
