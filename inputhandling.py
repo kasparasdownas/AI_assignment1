@@ -19,7 +19,21 @@ def get_key():
 def get_move():
     """
     Returns a move from the user.
-    Supports WASD and arrow key sequences.
+    Supports WASD and arrow keys.
     """
-    move = input("Enter move (WASD or arrow keys, Q to quit): ").upper()
-    return move
+    move = get_key()
+    if move == 'w' or move == '\x1b[A':  # up
+        return 'UP'
+    elif move == 's' or move == '\x1b[B':  # down
+        return 'DOWN'
+    elif move == 'a' or move == '\x1b[D':  # left
+        return 'LEFT'
+    elif move == 'd' or move == '\x1b[C':  # right
+        return 'RIGHT'
+    elif move == 'c':  # restart
+        return 'RESTART'
+    elif move == 'q':  # quit
+        return 'QUIT'
+    elif move == 'p':  # toggle AI
+        return 'TOGGLE_AI'
+    return None
