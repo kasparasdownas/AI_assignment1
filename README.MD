@@ -1,20 +1,33 @@
 # 2048 AI Project
 
-This repository contains a Python implementation of the 2048 board game along with an AI player that uses an expectimax search algorithm to play the game. The project is organized into several files for clarity and separation of concerns, as required by the assignment.
+Implementation of 2048 game with Expectiminimax AI algorithm, GUI, and performance analysis tools.
 
-## Requirements
+## Setup
 
-- **Python 3.x**  
-- Works on Windows, macOS, and Linux. 
+1. Requirements: Python 3.x, pygame, tqdm
+2. Install dependencies: `pip install -r requirements.txt`
 
-## How to Run
+## Usage
 
-### Running the game:
+- Play game: `python play.py`
+- Run AI analysis: `python headless_stats.py`
 
-1. Open a terminal in the project directory.
-2. Execute the following command:
-   ```bash
-   python play.py
-Or run the play.py file.
+### Controls
+- Arrow keys: Move tiles
+- Space: Turn on AI
+- +/-: Adjust AI depth (1-4)
+- R: Restart
+- ESC: Quit
 
-These commands starts the game where u have the option to play manually or get an AI to play the game for you.
+## Files
+
+- `play.py`: GUI game
+- `model.py`: Game logic
+- `ai.py`: Expectiminimax algorithm
+- `headless_stats.py`: Performance analyzerr
+
+## Notes
+
+- Higher search depths (3+) give better results but run slower
+- Results are saved to JSON files
+- Fix pygame on macOS: `python -m pip install pygame --user`
