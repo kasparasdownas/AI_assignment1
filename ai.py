@@ -71,14 +71,23 @@ def is_game_over_sim(board):
     return True
 
 def heuristic(board):
-    """Simple heuristic that prioritizes moving numbers left and having higher numbers on top."""
     free_cells = sum(cell == 0 for row in board for cell in row)
     max_tile = max(max(row) for row in board)
-    
-    # Score board positioning: prefer higher numbers on top and more free cells
-    row_priority = sum(board[i][j] * (4 - j) for i in range(4) for j in range(4))
-    
-    return free_cells * 1000 + row_priority + max_tile
+
+    position_weights = [
+        [ 32768, 16384, 8192, 4096 ],
+        [ 2048, 1024, 512, 256 ],
+        [ 128, 64, 32, 16 ],
+        [ 8, 4, 2, 1 ]
+    ]
+
+    position_score = sum(board[i][j] * position_weights[i][j] for i in range(4) for j in range(4))
+
+    return (
+        free_cells * 1000 +  # Keep space for future moves
+        position_score +     # Strongly encourage tiles in top-left
+        max_tile             # Prioritize high values in general
+    )
 
 def get_best_move(board, score, depth=2):
     """AI only moves in one of the 4 directions and chooses the best move based on heuristic."""
