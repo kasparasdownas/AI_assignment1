@@ -14,7 +14,7 @@ This repository contains a Python implementation of the 2048 board game along wi
 1. Open a terminal in the project directory.
 2. Execute the following command:
    ```bash
-   python main.py
-   python game.py
+   python play.py
+Or run the play.py file.
 
 These commands starts the game where u have the option to play manually or get an AI to play the game for you.
